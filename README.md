@@ -1,1 +1,0 @@
-# Gravatitional-Wave-Prediction

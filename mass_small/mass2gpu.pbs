@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+#PBS -l walltime=04:00:00,nodes=1:ppn=12:TeslaK40M
+#PBS -N mass_debug_1120
+#PBS -q ncsa
+# End of embedded QSUB options
+#
+
+module load anaconda/3
+cd multi-gpu/mass_small
+python3 deepGW_train_multi_gpu.py
