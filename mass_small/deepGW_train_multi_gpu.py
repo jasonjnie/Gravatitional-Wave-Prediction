@@ -107,40 +107,27 @@ def train(inputs, labels):
 
         tf.train.start_queue_runners(sess=sess)
 
-        for epoch in range(num_epoch):
+        for step in range(num_step):
 
+            input_epoch, label_epoch = deepGW.generate_batch_input_estimator(inputs, labels, 'train', snr,
+                                                                             num_gpus * train_step_size, 0, 0)
+            input_batch, label_batch = deepGW.get_a_batch(input_epoch, label_epoch, train_step_size, num_gpus, 0)
 
-            #inputs, labels = deepGW.generate_batch_input(data=inputs, phase='train', snr=snr, size=2*len(inputs), num_epoch, epoch)
+            start_time = time.time()
 
-            inputs, labels = deepGW.generate_batch_input_estimator(inputs, labels, 'train', snr, len(inputs), num_epoch, epoch)
-            num_step = inputs.shape[0] // (train_step_size * num_gpus)
-            input_epoch, label_epoch = deepGW.prepare_data(inputs, labels)
+            _, loss_value, acc_value = sess.run([apply_gradient_op, loss, accuracy],
+                                                feed_dict={X: input_batch, Y_: label_batch})
 
-            for step in range(num_step):
+            duration = time.time() - start_time
 
-                input_batch, label_batch = deepGW.get_a_batch(input_epoch, label_epoch, train_step_size, num_gpus, step)
+            if step % 10 == 0:
+                num_examples_per_step = train_step_size * num_gpus
+                examples_per_sec = num_examples_per_step / duration
+                sec_per_batch = duration / num_gpus
 
-                start_time = time.time()
+                format_str = ('step %d, mse = %.5f, relative_error = %.2f (%.1f examples/sec; %.3f sec/batch)')
 
-                _, loss_value, acc_value = sess.run([apply_gradient_op, loss, accuracy], feed_dict={X: input_batch, Y_: label_batch})
-
-                duration = time.time() - start_time
-
-                if step % 10 == 0:
-
-                    num_examples_per_step = train_step_size * num_gpus
-                    examples_per_sec = num_examples_per_step / duration
-                    sec_per_batch = duration / num_gpus
-
-                    format_str = ('epoch %d, step %d, mse = %.5f, relative_error = %.2f (%.1f examples/sec; %.3f sec/batch)')
-
-                    print(format_str % (epoch, step, loss_value, acc_value, examples_per_sec, sec_per_batch))
-
-                """
-                if (step + 1) == num_step:
-                    saver.save(sess, '/home/ruilan2/multi_gpu/ver3.ckpt', global_step=epoch)
-                """
-
+                print(format_str % (step, loss_value, acc_value, examples_per_sec, sec_per_batch))
 
     # inputs, labels = deepGW.read_dataset(phase='val')
     # test_loss = []
