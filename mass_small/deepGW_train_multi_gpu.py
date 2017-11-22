@@ -14,7 +14,7 @@ train_step_size = 50
 num_epoch = 200
 num_gpus = 1
 log_device_placement = False	# toggle to true to print log 
-num_step = 5000
+num_step = 5000      # total number of steps to train (500 signals per step)
 
 
 def tower_loss(scope, inputs, labels):
