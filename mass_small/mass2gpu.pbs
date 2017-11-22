@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #PBS -l walltime=04:00:00,nodes=1:ppn=12:TeslaK40M
-#PBS -N mass_debug_1120
+#PBS -N mass_multi_gpu
 #PBS -q ncsa
 # End of embedded QSUB options
 #
