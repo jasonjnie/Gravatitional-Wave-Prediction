@@ -1,8 +1,3 @@
-"""
-@Date: 11/07/2017
-@Update: 11/11/2017
-@Rui Lan
-"""
 
 import tensorflow as tf 
 import deepGW
@@ -115,7 +110,7 @@ def train(inputs, labels):
 		# 	inputs, labels = deepGW.generate_batch_input_estimator(inputs, labels, 'train', snr, len(inputs), num_epoch, epoch)
 		# 	num_step = inputs.shape[0] // (train_step_size * num_gpus)
 		# 	input_epoch, label_epoch = deepGW.prepare_data(inputs, labels)
-			
+		prog_start_time = time.time()	
 		for step in range(num_step):
 			
 			input_epoch, label_epoch = deepGW.generate_batch_input_estimator(inputs, labels, 'train', snr, num_gpus*train_step_size, 0, 0)
@@ -141,7 +136,8 @@ def train(inputs, labels):
 				if (step + 1) == num_step:
 					saver.save(sess, '/home/ruilan2/multi_gpu/ver3.ckpt', global_step=epoch)
 				"""
-
+		total_time = int(time.time() - prog_start_time)
+        print("Trained on {} steps in {} hr {} min".format(num_step, total_time//3600, (total_time%3600)//60))
 	
 	# inputs, labels = deepGW.read_dataset(phase='val')
 	# test_loss = []
