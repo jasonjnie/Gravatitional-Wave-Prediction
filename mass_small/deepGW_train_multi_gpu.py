@@ -1,8 +1,3 @@
-"""
-@Date: 11/07/2017
-@Update: 11/11/2017
-@Rui Lan
-"""
 
 import tensorflow as tf 
 import deepGW
@@ -18,7 +13,8 @@ snr = 0.6
 train_step_size = 50
 num_epoch = 200
 num_gpus = 1
-log_device_placement = True
+log_device_placement = False	# toggle to true to print log 
+num_step = 5000
 
 
 def tower_loss(scope, inputs, labels):
