@@ -1,8 +1,4 @@
-"""
-@Date: 11/07/2017
 
-@Rui Lan
-"""
 
 import tensorflow as tf 
 import h5py 
