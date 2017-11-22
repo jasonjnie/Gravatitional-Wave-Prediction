@@ -8,7 +8,7 @@ import scipy.io as sio
 """
 <<<Hyperparameters>>>
 """
-lr = 0.0001 			#not sure whether this matters 
+lr = 0.001 			#not sure whether this matters
 snr = 0.6
 train_step_size = 50
 num_epoch = 200
@@ -97,12 +97,13 @@ def train(inputs, labels):
         saver = tf.train.Saver()
 
         init = tf.global_variables_initializer()
-        sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=log_device_placement))
+        sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=False, log_device_placement=log_device_placement))
 
         sess.run(init)
 
         tf.train.start_queue_runners(sess=sess)
 
+        prog_start_time = time.time()
         for step in range(num_step):
 
             input_epoch, label_epoch = deepGW.generate_batch_input_estimator(inputs, labels, 'train', snr,
@@ -124,6 +125,9 @@ def train(inputs, labels):
                 format_str = ('step %d, mse = %.5f, relative_error = %.2f (%.1f examples/sec; %.3f sec/batch)')
 
                 print(format_str % (step, loss_value, acc_value, examples_per_sec, sec_per_batch))
+
+        total_time = int(time.time() - prog_start_time)
+        print("Trained on {} steps in {} hr {} min".format(num_step, total_time//3600, (total_time%3600)//60)
 
     # inputs, labels = deepGW.read_dataset(phase='val')
     # test_loss = []
