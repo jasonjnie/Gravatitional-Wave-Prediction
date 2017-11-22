@@ -1,5 +1,3 @@
-
-
 import tensorflow as tf 
 import h5py 
 import numpy as np 
@@ -98,21 +96,21 @@ def read_dataset(phase):
     print("<<<Loading datasets>>>")
 
     if phase == 'train':
-        ftrain = h5py.File('/projects/ncsa/grav/cs598_final_proj/Dataset/ProperWhitenGW/TrainEOB_q-1-10-0.02_ProperWhitenZ.h5', 'r')
+        ftrain = h5py.File('../Dataset/ProperWhitenGW/TrainEOB_q-1-10-0.02_ProperWhitenZ.h5', 'r')
         sig = ftrain.get('WhitenedSignals')
         sig = list(sig)
         label = ftrain.get('m1m2')
         label = list(label)
 
     elif phase == 'test':
-        ftest = h5py.File('/projects/ncsa/grav/cs598_final_proj/Dataset/ProperWhitenGW/TestEOB_q-1-10-0.02_ProperWhitenZ.h5', 'r')
+        ftest = h5py.File('../Dataset/ProperWhitenGW/TestEOB_q-1-10-0.02_ProperWhitenZ.h5', 'r')
         sig = ftest.get('WhitenedSignals')
         sig = list(sig)
         label = ftest.get('m1m2')
         label = list(label)
 
     else:
-        fval = h5py.File('/projects/ncsa/grav/cs598_final_proj/Dataset/ProperWhitenGW/ValEOB_q-1-10-0.02_ProperWhitenZ.h5', 'r')
+        fval = h5py.File('../Dataset/ProperWhitenGW/ValEOB_q-1-10-0.02_ProperWhitenZ.h5', 'r')
         sig = fval.get('WhitenedSignals')
         sig = list(sig)
         label = fval.get('m1m2')
