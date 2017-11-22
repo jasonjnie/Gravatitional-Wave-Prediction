@@ -175,7 +175,7 @@ def test(inputs, labels):
 """
 
 
-inputs, labels = deepGW.read_dataset(phase='train')
+inputs, labels = deepGW.read_dataset(phase='train')     # input shape = (9861, 8192)
 train(inputs, labels)
 
 #inputs, labels = deepGW.read_dataset(phase='val')
