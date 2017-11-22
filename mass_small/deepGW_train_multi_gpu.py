@@ -127,7 +127,7 @@ def train(inputs, labels):
                 print(format_str % (step, loss_value, acc_value, examples_per_sec, sec_per_batch))
 
         total_time = int(time.time() - prog_start_time)
-        print("Trained on {} steps in {} hr {} min".format(num_step, total_time//3600, (total_time%3600)//60)
+        print("Trained on {} steps in {} hr {} min".format(num_step, total_time//3600, (total_time%3600)//60))
 
     # inputs, labels = deepGW.read_dataset(phase='val')
     # test_loss = []
