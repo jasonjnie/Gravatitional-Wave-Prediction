@@ -10,3 +10,4 @@ wave_large/.DS_Store
 .idea/workspace.xml
 mass_small/__pycache__
 cifar10
+mass_small/test.py

@@ -315,12 +315,14 @@ def accuracy(results, labels):
     return tf.add_n(tf.get_collection('accuracies'), name='total_accuracy')
 """
 
+
 def loss_estimator(logits, labels):   ##########????????
     mse = tf.losses.mean_squared_error(labels, logits)
 
     tf.add_to_collection('losses', mse)   ##########???????? shape
 
     return tf.add_n(tf.get_collection('losses'), name='total_loss')
+
 
 def accuracy_estimator(results, labels):
 

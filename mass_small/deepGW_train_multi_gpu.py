@@ -133,13 +133,13 @@ def train(inputs, labels, num_gpus, num_step):
                 format_str = ('step %d, mse = %.5f, relative_error = %.2f (%.1f examples/sec; %.3f sec/batch)')
                 print(format_str % (step, loss_value, acc_value, examples_per_sec, sec_per_batch))
 
-                """
-                if (step + 1) == num_step:
-                    saver.save(sess, '/home/ruilan2/multi_gpu/ver3.ckpt', global_step=epoch)
-                """
-        train_time = int(time.time() - train_start_time)
-        print("Trained on {} gpus in {} steps in {} hr {} min".format(num_gpus, num_step, train_time // 3600,
-                                                                      (train_time % 3600) // 60))
+        model_name = "Model_" + str(num_gpus) + "_GPU"
+        saver.save(sess, name)
+
+
+        total_time = int(time.time() - train_start_time)
+        print("Trained on {} gpus in {} steps in {} hr {} min".format(num_gpus, num_step, total_time // 3600,
+                                                                      (total_time % 3600) // 60))
 
 
     # inputs, labels = deepGW.read_dataset(phase='val')
