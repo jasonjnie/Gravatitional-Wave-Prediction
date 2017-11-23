@@ -14,8 +14,8 @@ lr = 0.0001 			#not sure whether this matters
 train_step_size = 50
 #num_epoch = 300
 log_device_placement = True	    # toggle to true to print log
-all_num_gpus = [1, 2]
-all_num_steps = [15000, 7500]      # total number of steps to train (500 signals per step)
+all_num_gpus = [1, 1]
+all_num_steps = [300, 300]      # total number of steps to train (500 signals per step)
 
 
 def tower_loss(scope, inputs, labels):
@@ -73,7 +73,12 @@ def calc_snr(num_step):
 
 
 def train(inputs, labels, num_gpus, num_step):
+
     with tf.device('/cpu:0'):
+        init = tf.global_variables_initializer()
+        sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=log_device_placement))
+        sess.run(init)
+
         global_step = tf.Variable(0, name='global_step', trainable=False)
         opt = tf.train.AdamOptimizer(lr)
         with tf.name_scope('Input'):
@@ -94,11 +99,6 @@ def train(inputs, labels, num_gpus, num_step):
 
         grads = average_gradients(tower_grads)
         apply_gradient_op = opt.apply_gradients(grads, global_step=global_step)
-
-        saver = tf.train.Saver()
-        init = tf.global_variables_initializer()
-        sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=log_device_placement))
-        sess.run(init)
 
         tf.train.start_queue_runners(sess=sess)     ###########????????????
 
@@ -132,8 +132,9 @@ def train(inputs, labels, num_gpus, num_step):
                 format_str = ('step %d, mse = %.5f, relative_error = %.2f (%.1f examples/sec; %.3f sec/batch)')
                 print(format_str % (step, loss_value, acc_value, examples_per_sec, sec_per_batch))
 
-        model_path = "/home/ruilan2/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
-        #model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+        saver = tf.train.Saver()
+        #model_path = "/home/ruilan2/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+        model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
         saver.save(sess, model_path)
 
 
