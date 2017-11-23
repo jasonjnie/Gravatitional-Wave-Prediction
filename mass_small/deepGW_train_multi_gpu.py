@@ -15,7 +15,7 @@ train_step_size = 50
 #num_epoch = 300
 log_device_placement = True	    # toggle to true to print log
 all_num_gpus = [1, 1]
-all_num_steps = [300, 300]      # total number of steps to train (500 signals per step)
+all_num_steps = [100, 100]      # total number of steps to train (500 signals per step)
 
 
 def tower_loss(scope, inputs, labels):
@@ -199,8 +199,9 @@ def make_plot(loss, acc):
     :param acc(list): list of relative error
     :return: None
     """
+    counter = 1
     for i in range(len(all_num_gpus)):
-        plt.figure(i)
+        plt.figure(i+1)
         steps = np.arange(0, all_num_steps[i], 1)
         SNRs = calc_snr(all_num_steps[i])
         plt.subplot(311)
@@ -212,7 +213,9 @@ def make_plot(loss, acc):
         plt.subplot(313)
         plt.plot(step, acc[i])
         plt.suptitle("Relative Error")
-        plt.imsave("Trained on {} GPUs in {} steps".format(all_num_gpus[i], all_num_steps[i]))
+        #plt.imsave("Trained on {} GPUs in {} steps".format(all_num_gpus[i], all_num_steps[i]))
+        plt.imsave("Trained on {} GPUs in {} steps".format(counter, all_num_steps[i]))
+        counter += 1
 
 
 
