@@ -75,9 +75,8 @@ def calc_snr(num_step):
 def train(inputs, labels, num_gpus, num_step):
 
     with tf.device('/cpu:0'):
-        init = tf.global_variables_initializer()
         sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=log_device_placement))
-        sess.run(init)
+
 
         global_step = tf.Variable(0, name='global_step', trainable=False)
         opt = tf.train.AdamOptimizer(lr)
@@ -100,6 +99,7 @@ def train(inputs, labels, num_gpus, num_step):
         grads = average_gradients(tower_grads)
         apply_gradient_op = opt.apply_gradients(grads, global_step=global_step)
 
+        sess.run(tf.global_variables_initializer())
         tf.train.start_queue_runners(sess=sess)     ###########????????????
 
         # 	inputs, labels = deepGW.generate_batch_input(data=inputs, phase='train', snr=snr, size=2*len(inputs), num_epoch, epoch)
