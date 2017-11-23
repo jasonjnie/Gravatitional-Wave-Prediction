@@ -133,8 +133,8 @@ def train(inputs, labels, num_gpus, num_step):
                 print(format_str % (step, loss_value, acc_value, examples_per_sec, sec_per_batch))
 
         saver = tf.train.Saver()
-        #model_path = "/home/ruilan2/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
-        model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+        model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+        #model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
         saver.save(sess, model_path)
         #sess.close()
 
@@ -216,9 +216,6 @@ def make_plot(loss, acc):
         xticklabels = ax1.get_xticklabels() + ax2.get_xticklabels()
         plt.setp(xticklabels, visible=False)
         plt.suptitle("Trained on {} GPUs in {} steps".format(all_num_gpus[i], all_num_steps[i]))
-        #plt.savefig("Trained on {} GPUs in {} steps".format(all_num_gpus[i], all_num_steps[i]))
-        plt.title("Trained on {} GPUs in {} steps".format(counter, all_num_steps[i]))
-        #plt.savefig("result_img/Train_" + str(all_num_gpus[i]) + "_GPUs")
         fig.tight_layout(rect=[0, 0, 1, 0.95])
         plt.savefig("result_img/Train_" + str(counter) + "_GPUs")
         counter += 1
