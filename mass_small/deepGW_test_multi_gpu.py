@@ -7,6 +7,7 @@ plt.switch_backend('agg')
 
 test_step_size = 50
 all_num_gpus = [1, 2]    # testing
+log_device_placement = False
 
 
 def make_plot(loss, acc):
@@ -34,7 +35,8 @@ def make_plot(loss, acc):
 
 
 def test(inputs, labels, num_gpus):
-    sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+    tf.reset_default_graph()
+    sess = tf.Session(config=tf.ConfigProto(log_device_placement=log_device_placement))
     with tf.name_scope('Input'):
         X = tf.placeholder(tf.float32, [None, 1, 8192])
     with tf.name_scope('Label'):
