@@ -85,7 +85,7 @@ def test(inputs, labels, num_gpus):
 
 
 if __name__ == "__main__":
-    data = deepGW.read_dataset(phase='test')
+    inputs, labels = deepGW.read_dataset(phase='test')
     loss, acc = [], []
     for i in range(len(all_num_gpus)):
         ret_value = test(inputs, labels, all_num_gpus[i])
