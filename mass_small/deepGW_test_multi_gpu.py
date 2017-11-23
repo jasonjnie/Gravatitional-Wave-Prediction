@@ -18,14 +18,18 @@ def make_plot(loss, acc):
     """
     snr = np.linspace(0.2, 3, 29)
     for i in range(len(all_num_gpus)):
-        plt.figure(i)
-        plt.subplot(211)
-        plt.plot(snr, loss[i])
-        plt.suptitle("MSE")
-        plt.subplot(212)
-        plt.plot(snr, acc[i])
-        plt.suptitle("Relative Error")
-        plt.title("Test Prediction on" + str(all_num_gpus[i]) + "GPUs")
+        plt.figure()
+        plt.tight_layout()
+        ax1 = plt.subplot(211)
+        ax1.plot(snr, loss[i])
+        plt.ylabel("MSE")
+        ax2 = plt.subplot(212)
+        ax2.plot(snr, acc[i])
+        plt.xlabel("SNR")
+        plt.ylabel("Relative Error")
+        xticklabels = ax1.get_xticklabels()
+        plt.setp(xticklabels, visible=False)
+        plt.suptitle("Test Prediction on" + str(all_num_gpus[i]) + "GPUs")
         plt.savefig("result_img/Test_" + str(all_num_gpus[i]) + "_GPUs")
 
 
