@@ -201,7 +201,8 @@ def make_plot(loss, acc):
     """
     counter = 1
     for i in range(len(all_num_gpus)):
-        plt.figure(i+1)
+        f = int(i+1)
+        plt.figure(f)
         steps = np.arange(0, all_num_steps[i], 1)
         SNRs = calc_snr(all_num_steps[i])
         plt.subplot(311)
