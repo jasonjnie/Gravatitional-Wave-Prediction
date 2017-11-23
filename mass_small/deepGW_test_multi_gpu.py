@@ -1,7 +1,6 @@
-import tensorflow as tf 
+import tensorflow as tf
 import deepGW
-import numpy as np 
-
+import numpy as np
 
 test_step_size = 50
 all_num_gpus = [1]    # testing
