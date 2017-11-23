@@ -18,8 +18,8 @@ def make_plot(loss, acc):
     """
     snr = np.linspace(0.2, 3, 29)
     for i in range(len(all_num_gpus)):
-        plt.figure()
-        plt.tight_layout()
+        fig = plt.figure()
+        fig.tight_layout()
         ax1 = plt.subplot(211)
         ax1.plot(snr, loss[i])
         plt.ylabel("MSE")
