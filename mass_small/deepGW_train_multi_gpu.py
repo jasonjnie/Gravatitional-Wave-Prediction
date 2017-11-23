@@ -14,8 +14,8 @@ lr = 0.0001 			#not sure whether this matters
 train_step_size = 50
 #num_epoch = 300
 log_device_placement = False    # toggle to true to print log
-all_num_gpus = [1, 1]                                                           ################
-all_num_steps = [100, 100]      # total number of steps to train (500 signals per step)     #################
+all_num_gpus = [1]                                                           ################
+all_num_steps = [15000]      # total number of steps to train (500 signals per step)     #################
 
 
 def tower_loss(scope, inputs, labels):
@@ -133,8 +133,8 @@ def train(inputs, labels, num_gpus, num_step):
                 print(format_str % (step, loss_value, acc_value, examples_per_sec, sec_per_batch))
 
         saver = tf.train.Saver()
-        model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
-        #model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+        #model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+        model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
         saver.save(sess, model_path)
         #sess.close()
 
@@ -198,7 +198,7 @@ def make_plot(loss, acc):
     :param acc(list): list of relative error
     :return: None
     """
-    counter = 1
+    #counter = 1
     for i in range(len(all_num_gpus)):
         fig = plt.figure()
         steps = np.arange(0, all_num_steps[i], 1)
@@ -217,8 +217,9 @@ def make_plot(loss, acc):
         plt.setp(xticklabels, visible=False)
         plt.suptitle("Trained on {} GPUs in {} steps".format(all_num_gpus[i], all_num_steps[i]))
         fig.tight_layout(rect=[0, 0, 1, 0.95])
-        plt.savefig("result_img/Train_" + str(counter) + "_GPUs")
-        counter += 1
+        plt.savefig("result_img/Train_" + str(all_num_gpus[i]) + "_GPUs")
+        #plt.savefig("result_img/Train_" + str(counter) + "_GPUs")
+        #counter += 1
 
 
 
