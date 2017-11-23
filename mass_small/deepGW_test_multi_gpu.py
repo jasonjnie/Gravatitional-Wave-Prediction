@@ -6,7 +6,7 @@ plt.switch_backend('agg')
 
 
 test_step_size = 50
-all_num_gpus = [1]    # testing
+all_num_gpus = [1, 2]    # testing
 
 
 def make_plot(loss, acc):
@@ -26,7 +26,7 @@ def make_plot(loss, acc):
         plt.plot(snr, acc[i])
         plt.suptitle("Relative Error")
         plt.title("Test Prediction on" + str(all_num_gpus[i]) + "GPUs")
-        plt.savefig("Test_" + str(all_num_gpus[i]) + "_GPUs")
+        plt.savefig("result_img/Test_" + str(all_num_gpus[i]) + "_GPUs")
 
 
 def test(inputs, labels, num_gpus):

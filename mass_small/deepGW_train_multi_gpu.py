@@ -214,7 +214,8 @@ def make_plot(loss, acc):
         plt.suptitle("Relative Error")
         #plt.savefig("Trained on {} GPUs in {} steps".format(all_num_gpus[i], all_num_steps[i]))
         plt.title("Trained on {} GPUs in {} steps".format(counter, all_num_steps[i]))
-        plt.savefig("Train_" + str(all_num_gpus[i]) + "_GPUs")
+        #plt.savefig("result_img/Train_" + str(all_num_gpus[i]) + "_GPUs")
+        plt.savefig("result_img/Train_" + str(counter) + "_GPUs")
         counter += 1
 
 
