@@ -201,7 +201,6 @@ def make_plot(loss, acc):
     counter = 1
     for i in range(len(all_num_gpus)):
         fig = plt.figure()
-        fig.tight_layout()
         steps = np.arange(0, all_num_steps[i], 1)
         SNRs = calc_snr(all_num_steps[i])
         ax1 = fig.add_subplot(311)
@@ -220,6 +219,7 @@ def make_plot(loss, acc):
         #plt.savefig("Trained on {} GPUs in {} steps".format(all_num_gpus[i], all_num_steps[i]))
         plt.title("Trained on {} GPUs in {} steps".format(counter, all_num_steps[i]))
         #plt.savefig("result_img/Train_" + str(all_num_gpus[i]) + "_GPUs")
+        fig.tight_layout(rect=[0, 0, 1, 0.95])
         plt.savefig("result_img/Train_" + str(counter) + "_GPUs")
         counter += 1
 

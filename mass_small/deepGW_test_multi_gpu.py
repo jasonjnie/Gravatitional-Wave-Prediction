@@ -19,7 +19,6 @@ def make_plot(loss, acc):
     snr = np.linspace(0.2, 3, 29)
     for i in range(len(all_num_gpus)):
         fig = plt.figure()
-        fig.tight_layout()
         ax1 = fig.add_subplot(211)
         ax1.plot(snr, loss[i])
         plt.ylabel("MSE")
@@ -30,6 +29,7 @@ def make_plot(loss, acc):
         xticklabels = ax1.get_xticklabels()
         plt.setp(xticklabels, visible=False)
         plt.suptitle("Test Prediction on" + str(all_num_gpus[i]) + "GPUs")
+        fig.tight_layout(rect=[0, 0, 1, 0.95])
         plt.savefig("result_img/Test_" + str(all_num_gpus[i]) + "_GPUs")
 
 
