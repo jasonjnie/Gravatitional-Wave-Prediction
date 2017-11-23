@@ -134,6 +134,7 @@ def train(inputs, labels, num_gpus, num_step):
                 print(format_str % (step, loss_value, acc_value, examples_per_sec, sec_per_batch))
 
         model_path = "/home/ruilan2/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+        #model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
         saver.save(sess, model_path)
 
 
