@@ -13,7 +13,7 @@ lr = 0.0001 			#not sure whether this matters
 #snr = 0.6
 train_step_size = 50
 #num_epoch = 300
-log_device_placement = True	    # toggle to true to print log
+log_device_placement = False    # toggle to true to print log
 all_num_gpus = [1, 1]
 all_num_steps = [100, 100]      # total number of steps to train (500 signals per step)
 
@@ -200,7 +200,7 @@ def make_plot(loss, acc):
     """
     counter = 1
     for i in range(len(all_num_gpus)):
-        plt.figure(int(i+1))
+        plt.figure()
         steps = np.arange(0, all_num_steps[i], 1)
         SNRs = calc_snr(all_num_steps[i])
         plt.subplot(311)
