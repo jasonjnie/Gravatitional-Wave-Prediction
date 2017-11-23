@@ -20,10 +20,10 @@ def make_plot(loss, acc):
     for i in range(len(all_num_gpus)):
         fig = plt.figure()
         fig.tight_layout()
-        ax1 = plt.subplot(211)
+        ax1 = fig.add_subplot(211)
         ax1.plot(snr, loss[i])
         plt.ylabel("MSE")
-        ax2 = plt.subplot(212)
+        ax2 = fig.add_subplot(212)
         ax2.plot(snr, acc[i])
         plt.xlabel("SNR")
         plt.ylabel("Relative Error")
