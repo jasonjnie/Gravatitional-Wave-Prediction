@@ -6,7 +6,7 @@ plt.switch_backend('agg')
 
 
 test_step_size = 50
-all_num_gpus = [1, 2]    # testing
+all_num_gpus = [1, 1]    # testing      ########################
 log_device_placement = False
 
 

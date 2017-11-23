@@ -14,8 +14,8 @@ lr = 0.0001 			#not sure whether this matters
 train_step_size = 50
 #num_epoch = 300
 log_device_placement = False    # toggle to true to print log
-all_num_gpus = [1, 1]
-all_num_steps = [100, 100]      # total number of steps to train (500 signals per step)
+all_num_gpus = [1, 1]                                                           ################
+all_num_steps = [100, 100]      # total number of steps to train (500 signals per step)     #################
 
 
 def tower_loss(scope, inputs, labels):
@@ -100,7 +100,7 @@ def train(inputs, labels, num_gpus, num_step):
         init = tf.global_variables_initializer()
         sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=log_device_placement))
         sess.run(init)
-        tf.train.start_queue_runners(sess=sess)     ###########????????????
+        tf.train.start_queue_runners(sess=sess)
 
         # 	inputs, labels = deepGW.generate_batch_input(data=inputs, phase='train', snr=snr, size=2*len(inputs), num_epoch, epoch)
 
