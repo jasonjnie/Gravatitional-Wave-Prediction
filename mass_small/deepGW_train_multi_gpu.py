@@ -76,18 +76,15 @@ def train(inputs, labels, num_gpus, num_step):
 
     with tf.device('/cpu:0'):
         tf.reset_default_graph()
-        sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=log_device_placement))
-
-
         global_step = tf.Variable(0, name='global_step', trainable=False)
         opt = tf.train.AdamOptimizer(lr)
+
         with tf.name_scope('Input'):
             X = tf.placeholder(tf.float32, [None, num_gpus, 8192])
         with tf.name_scope('Label'):
             Y_ = tf.placeholder(tf.float32, [None, num_gpus, 2])
 
         tower_grads = []
-
         with tf.variable_scope(tf.get_variable_scope()):
             for i in range(num_gpus):
                 with tf.device('/gpu:%d' % i):
@@ -100,7 +97,9 @@ def train(inputs, labels, num_gpus, num_step):
         grads = average_gradients(tower_grads)
         apply_gradient_op = opt.apply_gradients(grads, global_step=global_step)
 
-        sess.run(tf.global_variables_initializer())
+        init = tf.global_variables_initializer()
+        sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=log_device_placement))
+        sess.run(init)
         tf.train.start_queue_runners(sess=sess)     ###########????????????
 
         # 	inputs, labels = deepGW.generate_batch_input(data=inputs, phase='train', snr=snr, size=2*len(inputs), num_epoch, epoch)
@@ -201,8 +200,7 @@ def make_plot(loss, acc):
     """
     counter = 1
     for i in range(len(all_num_gpus)):
-        f = int(i+1)
-        plt.figure(f)
+        plt.figure(int(i+1))
         steps = np.arange(0, all_num_steps[i], 1)
         SNRs = calc_snr(all_num_steps[i])
         plt.subplot(311)
