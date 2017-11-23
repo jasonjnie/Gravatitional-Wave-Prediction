@@ -64,7 +64,7 @@ def average_gradients(tower_grads):
 
 def calc_snr(num_step):
     """
-    Calculate SNR as a function of total steps
+    Calculate SNR as a function of total steps, SNR varies from decreases from 3 to 0.2
     :param num_step(int): total steps
     :return SNR(numpy array): list of all SNRs per step (num_step,)
     """
@@ -133,8 +133,8 @@ def train(inputs, labels, num_gpus, num_step):
                 format_str = ('step %d, mse = %.5f, relative_error = %.2f (%.1f examples/sec; %.3f sec/batch)')
                 print(format_str % (step, loss_value, acc_value, examples_per_sec, sec_per_batch))
 
-        model_name = "Model_" + str(num_gpus) + "_GPU"
-        saver.save(sess, name)
+        model_path = "/home/ruilan2/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+        saver.save(sess, model_path)
 
 
         total_time = int(time.time() - train_start_time)

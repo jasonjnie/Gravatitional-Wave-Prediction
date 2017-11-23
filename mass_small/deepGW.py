@@ -132,9 +132,11 @@ def computer_batch_snr(snr, num_epoch, epoch):
     return 3 - ((3 - snr) * (epoch / num_epoch))
 """
 
-"""
+'''
 def generate_batch_input(data, phase, snr, size, num_epoch, epoch):
-
+    """
+    For testing
+    """
     if phase == 'train':
         snr_ = computer_batch_snr(snr, num_epoch, epoch)
 
@@ -144,10 +146,12 @@ def generate_batch_input(data, phase, snr, size, num_epoch, epoch):
         inputs, labels = generator_fix_snr(data, size, snr)
 
     return inputs, labels 
-"""
+'''
 
 def generate_batch_input_estimator(data, label, phase, snr, size, num_epoch, epoch):
-
+    """
+    For training
+    """
     if phase == 'train':
         #snr_ = computer_batch_snr(snr, num_epoch, epoch)
 
@@ -388,8 +392,8 @@ def accuracy(results, labels):
 """
 
 
-def loss_estimator(logits, labels):
-    mse = tf.losses.mean_squared_error(labels, logits)
+def loss_estimator(pred, labels):
+    mse = tf.losses.mean_squared_error(labels, pred)
 
     tf.add_to_collection('losses', mse)
 
