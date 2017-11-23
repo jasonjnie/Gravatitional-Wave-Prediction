@@ -1,6 +1,9 @@
 import tensorflow as tf
 import deepGW
 import numpy as np
+matplotlib.use('agg')
+import matplotlib.pyplot as plt
+
 
 test_step_size = 50
 all_num_gpus = [1]    # testing
