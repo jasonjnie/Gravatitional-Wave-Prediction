@@ -136,7 +136,7 @@ def train(inputs, labels, num_gpus, num_step):
         #model_path = "/home/ruilan2/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
         model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
         saver.save(sess, model_path)
-
+        sess.close()
 
         total_time = int(time.time() - train_start_time)
         print("Trained on {} gpus in {} steps in {} hr {} min".format(num_gpus, num_step, total_time // 3600,
