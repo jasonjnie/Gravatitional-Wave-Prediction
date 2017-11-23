@@ -8,6 +8,7 @@ import copy
 import os
 import scipy.io as sio
 
+
 def add_noise(signal_, label_, size, snr, X, Y_):
     signal = np.zeros([size, 8192])
     label = np.zeros([size, 2])
