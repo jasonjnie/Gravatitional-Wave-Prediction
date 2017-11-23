@@ -22,7 +22,7 @@ def make_plot(loss, acc):
         plt.subplot(212)
         plt.plot(snr, acc[i])
         plt.suptitle("Relative Error")
-        plt.imsave("Test Prediction on" + str(all_num_gpus[i]) + "GPUs")
+        plt.savefig("Test Prediction on" + str(all_num_gpus[i]) + "GPUs")
 
 
 def test(inputs, labels, num_gpus):
