@@ -3,9 +3,8 @@ import deepGW
 import numpy as np 
 import time 
 import scipy.io as sio
-matplotlib.use('agg')
 import matplotlib.pyplot as plt
-
+plt.switch_backend('agg')
 
 """
 <<<Hyperparameters>>>
