@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 <<<Hyperparameters>>>
 """
 lr = 0.0001 			#not sure whether this matters 
-snr = 0.6
+#snr = 0.6
 train_step_size = 50
 #num_epoch = 300
 log_device_placement = True	    # toggle to true to print log
@@ -108,12 +108,12 @@ def train(inputs, labels, num_gpus, num_step):
         # 	inputs, labels = deepGW.generate_batch_input_estimator(inputs, labels, 'train', snr, len(inputs), num_epoch, epoch)
         # 	num_step = inputs.shape[0] // (train_step_size * num_gpus)
         # 	input_epoch, label_epoch = deepGW.prepare_data(inputs, labels)
-
+        SNRs = calc_snr(num_step)
         all_loss, all_acc = [], []
         train_start_time = time.time()
 
         for step in range(num_step):
-
+            snr = SNRs[step]
             input_epoch, label_epoch = deepGW.generate_batch_input_estimator(inputs, labels, 'train', snr,
                                                                              num_gpus*train_step_size, 0, 0)
             input_batch, label_batch = deepGW.get_a_batch(input_epoch, label_epoch, train_step_size, num_gpus, 0)
