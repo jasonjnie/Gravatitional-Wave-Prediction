@@ -11,3 +11,5 @@ wave_large/.DS_Store
 mass_small/__pycache__
 cifar10
 mass_small/test.py
+mass_small/deepGW_train_multi_gpu_comment.py
+mass_small/deepGW_comment.py
