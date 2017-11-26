@@ -10,12 +10,14 @@ plt.switch_backend('agg')
 <<<Hyperparameters>>>
 """
 lr = 0.0001 			#not sure whether this matters 
-#snr = 0.6
+SNR_max = 16
+SNR_min = 0.06
+SNR_drop_step = 1000    # SNR remain at SNR_max until drop_step
 train_step_size = 50
 #num_epoch = 300
 log_device_placement = False    # toggle to true to print log
-all_num_gpus = [1]                                                           ################
-all_num_steps = [15000]      # total number of steps to train (500 signals per step)     #################
+all_num_gpus = [2]                                                           ################
+all_num_steps = [10000]      # total number of steps to train (500 signals per step)     #################
 
 
 def tower_loss(scope, inputs, labels):
@@ -63,12 +65,14 @@ def average_gradients(tower_grads):
 
 def calc_snr(num_step):
     """
-    Calculate SNR as a function of total steps, SNR varies from decreases from 3 to 0.2
+    Calculate SNR as a function of total steps, SNR remains at SNR_max for SNR_drop_step steps and then
+    drops from SNR_max to SNR_min
     :param num_step(int): total steps
     :return SNR(numpy array): list of all SNRs per step (num_step,)
     """
-    steps = np.arange(0, num_step, 1)
-    SNRs = 3 - (3 - 0.2) * (steps / num_step)
+    x = np.arange(num_step)
+    SNRs = (SNR_max - SNR_min) / (num_step - SNR_drop_step) * (-x + num_step)
+    SNRs[:SNR_drop_step] = SNR_max
     return SNRs
 
 
@@ -133,8 +137,8 @@ def train(inputs, labels, num_gpus, num_step):
                 print(format_str % (step, loss_value, acc_value, examples_per_sec, sec_per_batch))
 
         saver = tf.train.Saver()
-        #model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
-        model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+        model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+        #model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
         saver.save(sess, model_path)
         #sess.close()
 
