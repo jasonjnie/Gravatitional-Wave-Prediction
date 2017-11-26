@@ -6,7 +6,7 @@ plt.switch_backend('agg')
 
 
 test_step_size = 50
-all_num_gpus = [2]    # testing      ########################
+all_num_gpus = [1]    # testing      ########################
 log_device_placement = False
 SNR_max = 16
 SNR_min = 0.06
@@ -59,8 +59,8 @@ def test(inputs, labels, num_gpus):
     acc = deepGW.accuracy_estimator(pred, labels_tensor)
 
     saver = tf.train.Saver()
-    model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
-    #model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+    #model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+    model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
     saver.restore(sess, model_path)
 
     test_snr = np.linspace(SNR_min, SNR_max, SNR_num)

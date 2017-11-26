@@ -9,4 +9,3 @@
 module load anaconda/3
 cd Gravatitional-Wave-Prediction/mass_small
 python3 deepGW_train_multi_gpu.py
-python3 deepGW_test_multi_gpu.py

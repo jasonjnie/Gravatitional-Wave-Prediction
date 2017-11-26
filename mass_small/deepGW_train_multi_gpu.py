@@ -16,8 +16,8 @@ SNR_drop_step = 1000    # SNR remain at SNR_max until drop_step
 train_step_size = 50
 #num_epoch = 300
 log_device_placement = False    # toggle to true to print log
-all_num_gpus = [2]                                                           ################
-all_num_steps = [10000]      # total number of steps to train (500 signals per step)     #################
+all_num_gpus = [1]                                                           ################
+all_num_steps = [20000]      # total number of steps to train (500 signals per step)     #################
 
 
 def tower_loss(scope, inputs, labels):
@@ -137,8 +137,8 @@ def train(inputs, labels, num_gpus, num_step):
                 print(format_str % (step, loss_value, acc_value, examples_per_sec, sec_per_batch))
 
         saver = tf.train.Saver()
-        model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
-        #model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+        #model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+        model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
         saver.save(sess, model_path)
         #sess.close()
 
