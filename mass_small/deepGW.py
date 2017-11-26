@@ -1,7 +1,8 @@
 import tensorflow as tf
 import h5py 
 import numpy as np 
-import random 
+import random
+import pickle
 
 def prepare_data(inputs, labels):
 

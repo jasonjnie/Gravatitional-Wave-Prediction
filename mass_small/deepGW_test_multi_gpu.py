@@ -1,6 +1,7 @@
 import tensorflow as tf
 import deepGW
 import numpy as np
+import pickle
 import matplotlib.pyplot as plt
 plt.switch_backend('agg')
 
