@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 plt.switch_backend('agg')
 
 
-all_num_gpus = [1, 2]    # testing
+all_num_gpus = [1]    # testing
 test_step_size = 50
 log_device_placement = False
 SNR_max = 16
