@@ -1,19 +1,34 @@
+"""
+Train TWO Deep Neural Network to predict mass and spin of two gravitational waves.
+train signal: 8190 x 8192
+test signal: 910 x 8192
+"""
+
 import tensorflow as tf
 import deepGW
 import numpy as np 
-import time 
+import time
+import pickle
 import scipy.io as sio
+import matplotlib.pyplot as plt
+plt.switch_backend('agg')
 
 """
 <<<Hyperparameters>>>
 """
-lr = 0.001			#not sure whether this matters 
-snr = 2
-train_step_size = 128
+all_num_gpus = [1]
+all_num_steps = [20000]      # total number of steps to train (500 signals per step)
+all_params = ['mass', 'spin']
+lr = 0.0001 			#not sure whether this matters 
+SNR_max = 16
+SNR_min = 0.06
+SNR_drop_step = 1000    # SNR remain at SNR_max until drop_step
+train_step_size = 50
 #num_epoch = 300
-num_gpus = 2
-log_device_placement = False
-num_step = 20000
+log_device_placement = False    # toggle to true to print log
+
+
+
 
 def tower_loss(scope, inputs, labels):
 
@@ -29,19 +44,16 @@ def tower_loss(scope, inputs, labels):
     """
 
     pred = deepGW.inference_mass_estimator_4conv(inputs)
-
     _ = deepGW.loss_estimator(pred, labels)
-
     _ = deepGW.accuracy_estimator(pred, labels)
 
     losses = tf.get_collection('losses', scope)
     accuracies = tf.get_collection('accuracies', scope)
-
     total_loss = tf.add_n(losses, name='total_loss')
-
     total_accuracy = tf.add_n(accuracies, name='total_accuracy')
 
     return total_loss, total_accuracy
+
 
 def average_gradients(tower_grads):
     average_grads = []
@@ -50,7 +62,6 @@ def average_gradients(tower_grads):
         grads = []
         for g, _ in grad_and_vars:
             expanded_g = tf.expand_dims(g, 0)
-
             grads.append(expanded_g)
 
         grad = tf.concat(axis=0, values=grads)
@@ -62,93 +73,90 @@ def average_gradients(tower_grads):
     return average_grads
 
 
-def train(inputs, labels):
-    with tf.device('/cpu:0'):
-        global_step = tf.Variable(0, name='global_step', trainable=False)
+def calc_snr(num_step):
+    """
+    Calculate SNR as a function of total steps, SNR remains at SNR_max for SNR_drop_step steps and then
+    drops from SNR_max to SNR_min
+    :param num_step(int): total steps
+    :return SNR(numpy array): list of all SNRs per step (num_step,)
+    """
+    x = np.arange(num_step)
+    SNRs = (SNR_max - SNR_min) / (num_step - SNR_drop_step) * (-x + num_step)
+    SNRs[:SNR_drop_step] = SNR_max
+    return SNRs
 
+
+def train(inputs, labels, num_gpus, num_step, param):
+
+    with tf.device('/cpu:0'):
+        tf.reset_default_graph()
+        global_step = tf.Variable(0, name='global_step', trainable=False)
         opt = tf.train.AdamOptimizer(lr)
 
         with tf.name_scope('Input'):
             X = tf.placeholder(tf.float32, [None, num_gpus, 8192])
-
         with tf.name_scope('Label'):
-            Y_ = tf.placeholder(tf.float32, [None, num_gpus, 4])
+            Y_ = tf.placeholder(tf.float32, [None, num_gpus, 2])
 
         tower_grads = []
-
         with tf.variable_scope(tf.get_variable_scope()):
             for i in range(num_gpus):
                 with tf.device('/gpu:%d' % i):
                     with tf.name_scope('tower_%d' % i) as scope:
-
                         loss, accuracy = tower_loss(scope, X[:, i, :], Y_[:, i, :])
                         tf.get_variable_scope().reuse_variables()
-
                         grads = opt.compute_gradients(loss)
-                        #print(grads)
                         tower_grads.append(grads)
 
         grads = average_gradients(tower_grads)
-        #print(grads)
         apply_gradient_op = opt.apply_gradients(grads, global_step=global_step)
-
-        saver = tf.train.Saver()
 
         init = tf.global_variables_initializer()
         sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=log_device_placement))
-
         sess.run(init)
-
         tf.train.start_queue_runners(sess=sess)
-
-        # for epoch in range(num_epoch):
-
 
         # 	inputs, labels = deepGW.generate_batch_input(data=inputs, phase='train', snr=snr, size=2*len(inputs), num_epoch, epoch)
 
         # 	inputs, labels = deepGW.generate_batch_input_estimator(inputs, labels, 'train', snr, len(inputs), num_epoch, epoch)
         # 	num_step = inputs.shape[0] // (train_step_size * num_gpus)
         # 	input_epoch, label_epoch = deepGW.prepare_data(inputs, labels)
-        prog_start_time = time.time()
-
-        train_mse = []
-        train_relative_error = []
+        SNRs = calc_snr(num_step)
+        all_loss, all_acc = [], []
+        train_start_time = time.time()
 
         for step in range(num_step):
-
-            input_epoch, label_epoch = deepGW.generate_batch_input_estimator(inputs, labels, 'train', snr, num_gpus*train_step_size, num_step, step)
+            snr = SNRs[step]
+            input_epoch, label_epoch = deepGW.generate_batch_input_estimator(inputs, labels, 'train', snr,
+                                                                             num_gpus*train_step_size, 0, 0)
             input_batch, label_batch = deepGW.get_a_batch(input_epoch, label_epoch, train_step_size, num_gpus, 0)
 
             start_time = time.time()
-
-            _, loss_value, acc_value = sess.run([apply_gradient_op, loss, accuracy], feed_dict={X: input_batch, Y_: label_batch})
-
+            _, loss_value, acc_value = sess.run([apply_gradient_op, loss, accuracy],
+                                                feed_dict={X: input_batch, Y_: label_batch})
             duration = time.time() - start_time
-
-            train_mse.append(loss_value)
-
-            train_relative_error.append(acc_value)
+            all_loss.append(loss_value)     # loss: MSE
+            all_acc.append(acc_value)       # acc: relatively error
 
             if step % 10 == 0:
-
                 num_examples_per_step = train_step_size * num_gpus
                 examples_per_sec = num_examples_per_step / duration
                 sec_per_batch = duration / num_gpus
 
                 format_str = ('step %d, mse = %.5f, relative_error = %.2f (%.1f examples/sec; %.3f sec/batch)')
-
                 print(format_str % (step, loss_value, acc_value, examples_per_sec, sec_per_batch))
 
+        saver = tf.train.Saver()
+        #model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + param + str(num_gpus) + "_GPU.ckpt"
+        model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + param + str(num_gpus) + "_GPU.ckpt"
+        saver.save(sess, model_path)
+        #sess.close()
 
-                if step % 1000 == 0 or (step + 1) == num_step:
-                    saver.save(sess, '/home/ruilan2/multi-gpu/mass_large/save_results/save_proj_step20000_lr10.ckpt', global_step=step)
+        total_time = int(time.time() - train_start_time)
+        print("Trained {} on {} gpus in {} steps in {} hr {} min".format(param, num_gpus, num_step, total_time // 3600,
+                                                                        (total_time % 3600) // 60))
 
-        total_time = int(time.time() - prog_start_time)
-        print("Trained on {} steps in {} hr {} min".format(num_step, total_time//3600, (total_time%3600)//60))
 
-        print("<<<Training Finished!>>>")
-        sio.savemat('/home/ruilan2/multi-gpu/mass_large/save_results/train_mse_step20000_lr10.mat', {'mse': train_mse})
-        sio.savemat('/home/ruilan2/multi-gpu/mass_large/save_results/train_relative_error_step20000_lr10.mat', {'relative_error': train_relative_error})
     # inputs, labels = deepGW.read_dataset(phase='val')
     # test_loss = []
     # test_acc = []
@@ -168,7 +176,9 @@ def train(inputs, labels):
 
     # sio.savemat('/home/ruilan2/multi_gpu/loss.mat', {'mse': test_loss})
     # sio.savemat('/home/ruilan2/multi_gpu/acc.mat', {'ree': test_acc})
-    pass
+
+    return all_loss, all_acc
+
 
 """
 def test(inputs, labels):
@@ -195,8 +205,50 @@ def test(inputs, labels):
 """
 
 
-inputs, labels = deepGW.read_dataset_4paras(phase='train')
-train(inputs, labels)
+def make_plot(loss, acc, param):
+    """
+    Train step: plot step vs. MSE, vs. realative_error, vs. SNR
+    :param loss(list): list of MSEs
+    :param acc(list): list of relative error
+    :return: None
+    """
+    #counter = 1
+    for i in range(len(all_num_gpus)):
+        fig = plt.figure()
+        steps = np.arange(0, all_num_steps[i], 1)
+        SNRs = calc_snr(all_num_steps[i])
+        ax1 = fig.add_subplot(311)
+        ax1.plot(steps, SNRs)
+        plt.ylabel("SNR")
+        ax2 = fig.add_subplot(312)
+        ax2.plot(steps, loss[i])
+        plt.ylabel("MSE")
+        ax3 = fig.add_subplot(313)
+        ax3.plot(steps, acc[i])
+        plt.xlabel("Step")
+        plt.ylabel("Relative Error")
+        xticklabels = ax1.get_xticklabels() + ax2.get_xticklabels()
+        plt.setp(xticklabels, visible=False)
+        plt.suptitle("Trained {} on {} GPUs in {} steps".format(param, all_num_gpus[i], all_num_steps[i]))
+        fig.tight_layout(rect=[0, 0, 1, 0.95])
+        plt.savefig("result_img/Train_" + param + "_" + str(all_num_gpus[i]) + "_GPUs")
+        #plt.savefig("result_img/Train_" + str(counter) + "_GPUs")
+        #counter += 1
+
+
+
+if __name__ == "__main__":
+    inputs, labels = deepGW.read_dataset_4paras(phase='train')    # input shape = (9180, 8192)
+    loss, acc = [], []
+    for p in range(len(all_params))
+        for g in range(len(all_num_gpus)):
+            ret_value = train(inputs, labels[p], all_num_gpus[g], all_num_steps[g], all_params[p])
+            loss.append(ret_value[0])
+            acc.append(ret_value[1])
+        make_plot(loss, acc, all_params[p])
+
+
+
 
 #inputs, labels = deepGW.read_dataset(phase='val')
 #test(inputs, labels)

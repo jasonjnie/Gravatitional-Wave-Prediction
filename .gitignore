@@ -14,3 +14,6 @@ mass_small/test.py
 mass_small/deepGW_train_multi_gpu_comment.py
 mass_small/deepGW_comment.py
 mass_small_4_param/test.py
+mass_small_4_param/deepGW 2.py
+mass_small_4_param/deepGW_test_multi_gpu 2.py
+mass_small_4_param/deepGW_train_multi_gpu 2.py

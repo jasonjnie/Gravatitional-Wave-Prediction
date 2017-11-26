@@ -1,23 +1,27 @@
 import tensorflow as tf
 import deepGW
 import numpy as np
+import pickle
 import matplotlib.pyplot as plt
 plt.switch_backend('agg')
 
 
-test_step_size = 128
-all_num_gpus = [1]    # testing      ########################
+all_num_gpus = [1]    # testing
+test_step_size = 50
 log_device_placement = False
-num_gpus = 1
+SNR_max = 16
+SNR_min = 0.06
+SNR_num = 40    # 16 / 0.2
 
-def make_plot(loss, acc):
+
+def make_plot(loss, acc, param):
     """
     Test step: plot SNR vs. MSE, SNR vs. realative_error
     :param loss(list): list of MSEs
     :param acc(list): list of relative error
     :return: None
     """
-    snr = np.linspace(0.2, 3, 29)
+    snr = np.linspace(SNR_min, SNR_max, SNR_num)
     for i in range(len(all_num_gpus)):
         fig = plt.figure()
         ax1 = fig.add_subplot(211)
@@ -29,18 +33,18 @@ def make_plot(loss, acc):
         plt.ylabel("Relative Error")
         xticklabels = ax1.get_xticklabels()
         plt.setp(xticklabels, visible=False)
-        plt.suptitle("Test Prediction on " + str(all_num_gpus[i]) + " GPUs")
+        plt.suptitle("Test Prediction of " + param + " on " + str(all_num_gpus[i]) + " GPUs")
         fig.tight_layout(rect=[0, 0, 1, 0.95])
-        plt.savefig("result_img/Test_" + str(all_num_gpus[i]) + "_GPUs")
+        plt.savefig("result_img/Test_" + param + "_" + str(all_num_gpus[i]) + "_GPUs")
 
 
-def test(inputs, labels, num_gpus):
+def test(inputs, labels, num_gpus, param):
     tf.reset_default_graph()
     sess = tf.Session(config=tf.ConfigProto(log_device_placement=log_device_placement))
     with tf.name_scope('Input'):
         X = tf.placeholder(tf.float32, [None, 1, 8192])
     with tf.name_scope('Label'):
-        Y_ = tf.placeholder(tf.float32, [None, 1, 4])
+        Y_ = tf.placeholder(tf.float32, [None, 1, 2])
 
     inputs_tensor = deepGW.convert_to_tensor_float(X[:, 0, :])
     labels_tensor = deepGW.convert_to_tensor_float(Y_[:, 0, :])
@@ -55,50 +59,29 @@ def test(inputs, labels, num_gpus):
     loss = deepGW.loss_estimator(pred, labels_tensor)
     acc = deepGW.accuracy_estimator(pred, labels_tensor)
 
-
-    # sensitivity, opt = tf.metrics.sensitivity_at_specificity(predictions=pred, labels=labels_tensor, specificity=0.99)
-    # sess.run(tf.global_variables_initializer())
-    # sess.run(tf.local_variables_initializer())
-
     saver = tf.train.Saver()
-    if num_gpus == 1:
-        model_path = "/home/ruilan2/multi-gpu/mass_large/save_results/save_proj_step20000_lr1.ckpt-19000"
-    else:
-        model_path = "/home/ruilan2/multi-gpu/mass_large/save_results/save_proj_step20000_lr3.ckpt-19000"
-    #model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + str(num_gpus) + "_GPU.ckpt"
+    #model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + param + str(num_gpus) + "_GPU.ckpt"
+    model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + param + str(num_gpus) + "_GPU.ckpt"
     saver.restore(sess, model_path)
 
-    test_snr = np.linspace(0.2, 20, 100)
+    test_snr = np.linspace(SNR_min, SNR_max, SNR_num)
     test_loss = []
     test_acc = []
-    test_sns = []
 
-    for i in range(100):
+    for i in range(SNR_num):
         snr = test_snr[i]
         # print("SNR = ", snr)
         input_epoch, label_epoch = deepGW.generate_batch_input_estimator(inputs, labels, 'test', snr,
-                                                                         1*test_step_size, 0, 0)
-        input_batch, label_batch = deepGW.get_a_batch(input_epoch, label_epoch, test_step_size, 1, 0)
+                                                                         num_gpus*test_step_size, 0, 0)
+        input_batch, label_batch = deepGW.get_a_batch(input_epoch, label_epoch, test_step_size, num_gpus, 0)
 
         # test = add_noise(testsig, testlabel, 100, test_snr[i], X, Y_)
 
         cur_loss, cur_acc = sess.run([loss, acc], feed_dict={X: input_batch, Y_: label_batch})
-        #sns = sess.run([opt], feed_dict={X: input_batch, Y_: label_batch})
-
-        print('test: SNR =' + str(snr) + ' MSE:' + str(cur_loss) + ' realative_error:' + str(cur_acc))
-        #print('sensitivity=' + str(sns))
+        print('test: SNR =' + str(snr) + ' cross_entropy:' + str(cur_loss) + ' accuracy:' + str(cur_acc))
 
         test_loss.append(cur_loss)
         test_acc.append(cur_acc)
-        #test_sns.append(sns)
-    """
-    fig = plt.figure()
-    plt.plot(test_snr, np.array(test_sns).tolist())
-    plt.xlabel('SNR')
-    plt.ylabel('Sensitivity')
-    plt.title('SNR - Sensitivity Plot @(false_alarm=0.01)')
-    plt.savefig("result_img/sensitivity")
-    """
 
     return test_loss, test_acc
 
@@ -108,38 +91,13 @@ def test(inputs, labels, num_gpus):
 
 
 if __name__ == "__main__":
-    inputs, labels = deepGW.read_dataset_4paras(phase='test')
-    mse1, re1 = [], []
-    #for i in range(len(all_num_gpus)):
-    ret_value = test(inputs, labels, 1)
-    mse1.append(ret_value[0])
-    re1.append(ret_value[1])
+    inputs, labels = deepGW.read_dataset(phase='test')
+    loss, acc = [], []
+    for i in range(len(all_num_gpus)):
+        ret_value = test(inputs, labels, all_num_gpus[i])
+        loss.append(ret_value[0])
+        acc.append(ret_value[1])
 
-    """
-    loss2, acc2 = [], []
-    ret_value = test(inputs, 2)
-    loss2.append(ret_value[0])
-    acc2.append(ret_value[1])
-    #make_plot(loss, acc)
+    make_plot(loss, acc)
 
-    test_snr = np.linspace(0.2, 3, 29)
-    fig, ax = plt.subplots()
-    plt.xticks(np.linspace(0.2, 3, 8))
-    ax.plot(test_snr, np.array(acc1).T.tolist(), 'b', label="Using 1 GPU")
-    ax.plot(test_snr, np.array(acc2).T.tolist(), 'r', label="Using 2 GPUs")
-    legend = ax.legend(loc='lower right', shadow=False)
-    plt.xlabel('SNR')
-    plt.ylabel('Accuracy')
-    plt.title('SNR - Accuracy Plot')
-    plt.savefig("result_img/acc")
 
-    fig, ax = plt.subplots()
-    plt.xticks(np.linspace(0.2, 3, 8))
-    ax.plot(test_snr, np.array(loss1).T.tolist(), 'b', label="Using 1 GPU")
-    ax.plot(test_snr, np.array(loss2).T.tolist(), 'r', label="Using 2 GPUs")
-    legend = ax.legend(loc='upper right', shadow=False)
-    plt.xlabel('SNR')
-    plt.ylabel('Cross-entropy')
-    plt.title('SNR - Cross-entropy Plot')
-    plt.savefig("result_img/loss")
-    """

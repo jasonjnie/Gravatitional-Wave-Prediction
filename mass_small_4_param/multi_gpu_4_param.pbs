@@ -7,5 +7,5 @@
 #
 
 module load anaconda/2
-cd Gravatitional-Wave-Prediction/mass_small
+cd Gravatitional-Wave-Prediction/mass_small_4_param
 python deepGW_train_multi_gpu.py
