@@ -240,7 +240,7 @@ def make_plot(loss, acc, param):
 if __name__ == "__main__":
     inputs, labels = deepGW.read_dataset_4paras(phase='train')    # input shape = (9180, 8192)
     loss, acc = [], []
-    for p in range(len(all_params))
+    for p in range(len(all_params)):
         for g in range(len(all_num_gpus)):
             ret_value = train(inputs, labels[p], all_num_gpus[g], all_num_steps[g], all_params[p])
             loss.append(ret_value[0])
