@@ -240,7 +240,7 @@ def inference_mass_estimator_4conv(inputs):
         XX = tf.reshape(inputs, [-1, 8192, 1, 1])
 
     with tf.name_scope('Convolution_layer1'):
-        w_conv1 = weight_variable('w_conv1', [16, 1, 1, 64])
+        w_conv1 = weight_variable('w_conv1', [32, 1, 1, 64])
         b_conv1 = bias_variable('b_conv1', [64])
         conv1 = tf.nn.conv2d(XX, w_conv1, strides=[1, 1, 1, 1], padding='VALID')
         h_conv1 = tf.nn.bias_add(conv1, b_conv1)
@@ -252,7 +252,7 @@ def inference_mass_estimator_4conv(inputs):
         h_pool1 = tf.nn.relu(h_pool1)
 
     with tf.name_scope('Convolution_layer2'):
-        w_conv2 = weight_variable('w_conv2', [31, 1, 64, 128])
+        w_conv2 = weight_variable('w_conv2', [63, 1, 64, 128])
         b_conv2 = bias_variable('b_conv2', [128])
         conv2 = tf.nn.conv2d(h_pool1, w_conv2, strides=[1, 1, 1, 1], padding='VALID')
         h_conv2 = tf.nn.bias_add(conv2, b_conv2)
@@ -264,7 +264,7 @@ def inference_mass_estimator_4conv(inputs):
         h_pool2 = tf.nn.relu(h_pool2)
 
     with tf.name_scope('Convolution_layer3'):
-        w_conv3 = weight_variable('w_conv3', [31, 1, 128, 256])
+        w_conv3 = weight_variable('w_conv3', [127, 1, 128, 256])
         b_conv3 = bias_variable('b_conv3', [256])
         conv3=tf.nn.conv2d(h_pool2, w_conv3, strides=[1, 1, 1, 1], padding='VALID')
         h_conv3 = tf.nn.bias_add(conv3, b_conv3)
@@ -289,10 +289,10 @@ def inference_mass_estimator_4conv(inputs):
         h_pool4 = tf.nn.relu(h_pool4)
 
     with tf.name_scope('Flatten_layer'):
-        h_flatten = tf.reshape(h_pool4, [-1, 7168])
+        h_flatten = tf.reshape(h_pool4, [-1, 3584])
 
     with tf.name_scope('Relu_layer5'):
-        w_linear1 = weight_variable('w_linear1', [7168, 128])
+        w_linear1 = weight_variable('w_linear1', [3584, 128])
         b_linear1 = bias_variable('b_linear1', [128])
         h_linear1 = tf.nn.relu(tf.matmul(h_flatten, w_linear1) + b_linear1)
 
