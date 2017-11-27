@@ -146,10 +146,8 @@ def train(inputs, labels, num_gpus, num_step, param):
 
         # save model for use in testing/prediction process
         saver = tf.train.Saver()
-        model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/Model/Model_" + param \
-                     + str(num_gpus) + "_GPU.ckpt"
-        #model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small_4_param/Model/Model_" + param \
-                     + str(num_gpus) + "_GPU.ckpt"
+        model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/Model/Model_" + param + str(num_gpus) + "_GPU.ckpt"
+        #model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small_4_param/Model/Model_" + param + str(num_gpus) + "_GPU.ckpt"
         saver.save(sess, model_path)
         #sess.close()
 
