@@ -10,9 +10,9 @@ plt.switch_backend('agg')
 all_num_gpus = [1]    # testing
 test_step_size = 50
 log_device_placement = False
-SNR_max = 3
-SNR_min = 0.2
-SNR_num = 40    # 16 / 0.2
+SNR_max = 16
+SNR_min = 0.5
+SNR_num = 64    # 16 / 0.5
 
 
 def make_plot(loss, acc):

@@ -13,7 +13,7 @@ all_params = ['mass', 'spin']
 log_device_placement = False
 SNR_max = 16
 SNR_min = 0.5
-SNR_num = 40    # 16 / 0.2
+SNR_num = 64    # 16 / 0.2
 
 
 def make_plot(loss, acc, param):
