@@ -8,9 +8,9 @@ plt.switch_backend('agg')
 
 all_num_gpus = [1]    # testing
 test_step_size = 50
-log_device_placement = False
-SNR_max = 16
-SNR_min = 0.06
+log_device_placement = True
+SNR_max = 3
+SNR_min = 0.2
 SNR_num = 40    # 16 / 0.2
 
 
@@ -23,6 +23,7 @@ def make_plot(loss, acc):
     """
     snr = np.linspace(SNR_min, SNR_max, SNR_num)
     for i in range(len(all_num_gpus)):
+        num_gpu = str(all_num_gpus[i])
         fig = plt.figure()
         ax1 = fig.add_subplot(211)
         ax1.plot(snr, loss[i])
@@ -30,12 +31,14 @@ def make_plot(loss, acc):
         ax2 = fig.add_subplot(212)
         ax2.plot(snr, acc[i])
         plt.xlabel("SNR")
-        plt.ylabel("Relative Error")
+        plt.ylabel("Relative Error (%)")
         xticklabels = ax1.get_xticklabels()
         plt.setp(xticklabels, visible=False)
-        plt.suptitle("Test Prediction on " + str(all_num_gpus[i]) + " GPUs")
+        plt.suptitle("Test Prediction on " + num_gpu + " GPUs")
         fig.tight_layout(rect=[0, 0, 1, 0.95])
-        plt.savefig("result_img/Test_" + str(all_num_gpus[i]) + "_GPUs")
+        plt.savefig("result_img/Test_" + num_gpu + "_GPUs")
+        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/mat/test_cross_entropy_' + num_gpu + '_gpu.mat', {'cross_entropy': loss})
+        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/mat/test_accuracy_' + num_gpu + '_gpu.mat', {'accuracy': acc})
 
 
 def test(inputs, labels, num_gpus):
@@ -84,9 +87,6 @@ def test(inputs, labels, num_gpus):
         test_acc.append(cur_acc)
 
     return test_loss, test_acc
-
-    #sio.savemat('/home/ruilan2/multi-gpu/wave_large/save_results/cross_entropy.mat', {'cross_entropy': test_error})
-    #sio.savemat('/home/ruilan2/multi-gpu/wave_large/save_results/accuracy.mat', {'accuracy': test_acc})
 
 
 

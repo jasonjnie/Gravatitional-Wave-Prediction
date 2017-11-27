@@ -17,7 +17,7 @@ plt.switch_backend('agg')
 <<<Hyperparameters>>>
 """
 all_num_gpus = [1]
-all_num_steps = [20000]      # total number of steps to train (500 signals per step)
+all_num_steps = [15000]      # total number of steps to train (500 signals per step)
 all_params = ['mass', 'spin']
 lr = 0.0001 			#not sure whether this matters 
 SNR_max = 16
@@ -26,8 +26,6 @@ SNR_drop_step = 1000    # SNR remain at SNR_max until drop_step
 train_step_size = 50
 #num_epoch = 300
 log_device_placement = True    # toggle to true to print log
-
-
 
 
 def tower_loss(scope, inputs, labels):
@@ -146,9 +144,12 @@ def train(inputs, labels, num_gpus, num_step, param):
                 format_str = ('step %d, mse = %.5f, relative_error = %.2f (%.1f examples/sec; %.3f sec/batch)')
                 print(format_str % (step, loss_value, acc_value, examples_per_sec, sec_per_batch))
 
+        # save model for use in testing/prediction process
         saver = tf.train.Saver()
-        #model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + param + str(num_gpus) + "_GPU.ckpt"
-        model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + param + str(num_gpus) + "_GPU.ckpt"
+        model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small_4_param_1_gpu/Model/Model_" + param \
+                     + str(num_gpus) + "_GPU.ckpt"
+        # model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param_1_gpu/Model/Model_" + param
+        # + str(num_gpus) + "_GPU.ckpt"
         saver.save(sess, model_path)
         #sess.close()
 
@@ -226,7 +227,7 @@ def make_plot(loss, acc, param):
         ax3 = fig.add_subplot(313)
         ax3.plot(steps, acc[i])
         plt.xlabel("Step")
-        plt.ylabel("Relative Error")
+        plt.ylabel("Relative Error (%)")
         xticklabels = ax1.get_xticklabels() + ax2.get_xticklabels()
         plt.setp(xticklabels, visible=False)
         plt.suptitle("Trained {} on {} GPUs in {} steps".format(param, all_num_gpus[i], all_num_steps[i]))

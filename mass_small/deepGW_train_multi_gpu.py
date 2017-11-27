@@ -11,14 +11,14 @@ plt.switch_backend('agg')
 <<<Hyperparameters>>>
 """
 all_num_gpus = [1]
-all_num_steps = [20000]      # total number of steps to train (500 signals per step)
+all_num_steps = [10000]      # total number of steps to train (500 signals per step)
 lr = 0.0001 			#not sure whether this matters 
-SNR_max = 16
-SNR_min = 0.06
+SNR_max = 3
+SNR_min = 0.2
 SNR_drop_step = 1000    # SNR remain at SNR_max until drop_step
 train_step_size = 50
 #num_epoch = 300
-log_device_placement = False    # toggle to true to print log
+log_device_placement = True    # toggle to true to print log
 
 
 
@@ -218,7 +218,7 @@ def make_plot(loss, acc):
         ax3 = fig.add_subplot(313)
         ax3.plot(steps, acc[i])
         plt.xlabel("Step")
-        plt.ylabel("Relative Error")
+        plt.ylabel("Relative Error (%)")
         xticklabels = ax1.get_xticklabels() + ax2.get_xticklabels()
         plt.setp(xticklabels, visible=False)
         plt.suptitle("Trained on {} GPUs in {} steps".format(all_num_gpus[i], all_num_steps[i]))
@@ -226,7 +226,8 @@ def make_plot(loss, acc):
         plt.savefig("result_img/Train_" + str(all_num_gpus[i]) + "_GPUs")
         #plt.savefig("result_img/Train_" + str(counter) + "_GPUs")
         #counter += 1
-
+        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/mat/train_cross_entropy_' + num_gpu + '_gpu.mat', {'cross_entropy': loss})
+        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/mat/train_accuracy_' + num_gpu + '_gpu.mat', {'accuracy': acc})
 
 
 if __name__ == "__main__":

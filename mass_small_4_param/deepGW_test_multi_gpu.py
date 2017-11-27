@@ -30,7 +30,7 @@ def make_plot(loss, acc, param):
         ax2 = fig.add_subplot(212)
         ax2.plot(snr, acc[i])
         plt.xlabel("SNR")
-        plt.ylabel("Relative Error")
+        plt.ylabel("Relative Error (%)")
         xticklabels = ax1.get_xticklabels()
         plt.setp(xticklabels, visible=False)
         plt.suptitle("Test Prediction of " + param + " on " + str(all_num_gpus[i]) + " GPUs")
@@ -59,9 +59,12 @@ def test(inputs, labels, num_gpus, param):
     loss = deepGW.loss_estimator(pred, labels_tensor)
     acc = deepGW.accuracy_estimator(pred, labels_tensor)
 
+    # restore model saved in training process
     saver = tf.train.Saver()
-    #model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + param + str(num_gpus) + "_GPU.ckpt"
-    model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/Model/Model_" + param + str(num_gpus) + "_GPU.ckpt"
+    model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small_4_param_1_gpu/Model/Model_" + param \
+                 + str(num_gpus) + "_GPU.ckpt"
+    # model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param_multi_gpu/Model/Model_" + param
+    # + str(num_gpus) + "_GPU.ckpt"
     saver.restore(sess, model_path)
 
     test_snr = np.linspace(SNR_min, SNR_max, SNR_num)
