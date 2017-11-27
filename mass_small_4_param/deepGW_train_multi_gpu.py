@@ -25,7 +25,7 @@ SNR_min = 0.5
 SNR_drop_step = 1000    # SNR remain at SNR_max until drop_step
 train_step_size = 50
 #num_epoch = 300
-log_device_placement = True    # toggle to true to print log
+log_device_placement = False    # toggle to true to print log
 
 
 def tower_loss(scope, inputs, labels):

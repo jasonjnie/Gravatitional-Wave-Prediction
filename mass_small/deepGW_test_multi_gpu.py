@@ -9,7 +9,7 @@ plt.switch_backend('agg')
 
 all_num_gpus = [1]    # testing
 test_step_size = 50
-log_device_placement = True
+log_device_placement = False
 SNR_max = 3
 SNR_min = 0.2
 SNR_num = 40    # 16 / 0.2
