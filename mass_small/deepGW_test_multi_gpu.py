@@ -37,8 +37,8 @@ def make_plot(loss, acc):
         plt.suptitle("Test Prediction on " + num_gpu + " GPUs")
         fig.tight_layout(rect=[0, 0, 1, 0.95])
         plt.savefig("result_img/Test_" + num_gpu + "_GPUs")
-        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/mat/test_cross_entropy_' + num_gpu + '_gpu.mat', {'cross_entropy': loss})
-        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/mat/test_accuracy_' + num_gpu + '_gpu.mat', {'accuracy': acc})
+        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/mat/test_loss_' + str(i) + '_' + num_gpu + '_gpu.mat', {'cross_entropy': loss[i]})
+        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/mat/test_acc_' + str(i) + '_' + num_gpu + '_gpu.mat', {'accuracy': acc[i]})
 
 
 def test(inputs, labels, num_gpus):

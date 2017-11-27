@@ -10,7 +10,7 @@ all_num_gpus = [1]    # testing
 test_step_size = 50
 log_device_placement = False
 SNR_max = 16
-SNR_min = 0.06
+SNR_min = 0.5
 SNR_num = 40    # 16 / 0.2
 
 
@@ -36,6 +36,8 @@ def make_plot(loss, acc, param):
         plt.suptitle("Test Prediction of " + param + " on " + str(all_num_gpus[i]) + " GPUs")
         fig.tight_layout(rect=[0, 0, 1, 0.95])
         plt.savefig("result_img/Test_" + param + "_" + str(all_num_gpus[i]) + "_GPUs")
+        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/test_loss_' + str(i) + '_' + num_gpu + '_gpu.mat', {'cross_entropy': loss[i]})
+        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/test_acc_' + str(i) + '_' + num_gpu + '_gpu.mat', {'accuracy': acc[i]})
 
 
 def test(inputs, labels, num_gpus, param):

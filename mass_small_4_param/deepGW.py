@@ -129,7 +129,7 @@ def read_dataset_4paras(phase):
     if phase == 'train':
         #picklefile_p = open(r"/projects/ncsa/grav/cs598_final_proj/train_1000.pkl", "rb")
         picklefile_p = open(r"../Dataset/spin_aligned_pred/train_1000.pkl", "rb")
-        p = pickle.load(picklefile_p)
+        p = pickle.load(picklefile_p, encoding='latin1')
         picklefile_p.close()
         random.shuffle(p)
         sig, m1, m2, s1z, s2z = zip(*p)
@@ -141,7 +141,7 @@ def read_dataset_4paras(phase):
     else:
         #picklefile_p = open(r"/projects/ncsa/grav/cs598_final_proj/test_1000.pkl", "rb")
         picklefile_p = open(r"../Dataset/spin_aligned_pred/test_1000.pkl", "rb")
-        p = pickle.load(picklefile_p)
+        p = pickle.load(picklefile_p, encoding='latin1')
         picklefile_p.close()
         random.shuffle(p)
         sig, m1, m2, s1z, s2z = zip(*p)

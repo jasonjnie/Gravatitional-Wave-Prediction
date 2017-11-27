@@ -21,7 +21,7 @@ all_num_steps = [15000]      # total number of steps to train (500 signals per s
 all_params = ['mass', 'spin']
 lr = 0.0001 			#not sure whether this matters 
 SNR_max = 16
-SNR_min = 0.06
+SNR_min = 0.5
 SNR_drop_step = 1000    # SNR remain at SNR_max until drop_step
 train_step_size = 50
 #num_epoch = 300
@@ -235,6 +235,8 @@ def make_plot(loss, acc, param):
         plt.savefig("result_img/Train_" + param + "_" + str(all_num_gpus[i]) + "_GPUs")
         #plt.savefig("result_img/Train_" + str(counter) + "_GPUs")
         #counter += 1
+        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/train_loss_' + str(i) + '_' + num_gpu + '_gpu.mat', {'cross_entropy': loss[i]})
+        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/train_acc_' + str(i) + '_' + num_gpu + '_gpu.mat', {'accuracy': acc[i]})
 
 
 
