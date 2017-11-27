@@ -65,10 +65,10 @@ def test(inputs, labels, num_gpus, param):
 
     # restore model saved in training process
     saver = tf.train.Saver()
-    model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small_4_param/Model/Model_" + param \
+    model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/Model/Model_" + param \
                  + str(num_gpus) + "_GPU.ckpt"
-    # model_path = "/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param_multi_gpu/Model/Model_" + param
-    # + str(num_gpus) + "_GPU.ckpt"
+    #model_path = "/home/nie9/Gravatitional-Wave-Prediction/mass_small_4_param/Model/Model_" + param \
+                 + str(num_gpus) + "_GPU.ckpt"
     saver.restore(sess, model_path)
 
     test_snr = np.linspace(SNR_min, SNR_max, SNR_num)
