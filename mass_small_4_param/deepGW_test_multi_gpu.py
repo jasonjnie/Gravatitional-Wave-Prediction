@@ -16,7 +16,7 @@ SNR_min = 0.5
 SNR_num = 40    # 16 / 0.2
 
 
-def make_plot(loss, acc, param):
+def make_plot(loss, acc, num_gpu, param):
     """
     Test step: plot SNR vs. MSE, SNR vs. realative_error
     :param loss(list): list of MSEs
@@ -104,6 +104,6 @@ if __name__ == "__main__":
             loss.append(ret_value[0])
             acc.append(ret_value[1])
 
-        make_plot(loss, acc, all_params[p])
+        make_plot(loss, acc, all_num_gpus[i], all_params[p])
 
 

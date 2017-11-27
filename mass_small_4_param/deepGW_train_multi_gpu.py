@@ -204,7 +204,7 @@ def test(inputs, labels):
 """
 
 
-def make_plot(loss, acc, param):
+def make_plot(loss, acc, num_gpu, param):
     """
     Train step: plot step vs. MSE, vs. realative_error, vs. SNR
     :param loss(list): list of MSEs
@@ -246,7 +246,7 @@ if __name__ == "__main__":
             ret_value = train(inputs, labels[p], all_num_gpus[g], all_num_steps[g], all_params[p])
             loss.append(ret_value[0])
             acc.append(ret_value[1])
-        make_plot(loss, acc, all_params[p])
+        make_plot(loss, acc, all_num_gpus[g], all_params[p])
 
 
 
