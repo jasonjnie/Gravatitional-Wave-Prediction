@@ -16,7 +16,7 @@ SNR_min = 0.5
 SNR_num = 40    # 16 / 0.2
 
 
-def make_plot(loss, acc, num_gpu, param):
+def make_plot(loss, acc, param):
     """
     Test step: plot SNR vs. MSE, SNR vs. realative_error
     :param loss(list): list of MSEs
@@ -25,6 +25,7 @@ def make_plot(loss, acc, num_gpu, param):
     """
     snr = np.linspace(SNR_min, SNR_max, SNR_num)
     for i in range(len(all_num_gpus)):
+        num_gpu = str(all_num_gpus[i])
         fig = plt.figure()
         ax1 = fig.add_subplot(211)
         ax1.plot(snr, loss[i])
@@ -35,9 +36,9 @@ def make_plot(loss, acc, num_gpu, param):
         plt.ylabel("Relative Error (%)")
         xticklabels = ax1.get_xticklabels()
         plt.setp(xticklabels, visible=False)
-        plt.suptitle("Test Prediction of " + param + " on " + str(all_num_gpus[i]) + " GPUs")
+        plt.suptitle("Test Prediction of " + param + " on " + num_gpu + " GPUs")
         fig.tight_layout(rect=[0, 0, 1, 0.95])
-        plt.savefig("result_img/Test_" + param + "_" + str(all_num_gpus[i]) + "_GPUs")
+        plt.savefig("result_img/Test_" + param + "_" + num_gpu + "_GPUs")
         sio.savemat("/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/test_loss_" + str(i) + "_" + num_gpu + "_gpu.mat", {'cross_entropy': loss[i]})
         sio.savemat("/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/test_acc_" + str(i) + "_" + num_gpu + "_gpu.mat", {'accuracy': acc[i]})
 
@@ -104,6 +105,6 @@ if __name__ == "__main__":
             loss.append(ret_value[0])
             acc.append(ret_value[1])
 
-        make_plot(loss, acc, all_num_gpus[i], all_params[p])
+        make_plot(loss, acc, all_params[p])
 
 

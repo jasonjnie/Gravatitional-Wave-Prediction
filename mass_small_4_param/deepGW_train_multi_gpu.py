@@ -204,7 +204,7 @@ def test(inputs, labels):
 """
 
 
-def make_plot(loss, acc, num_gpu, param):
+def make_plot(loss, acc, param):
     """
     Train step: plot step vs. MSE, vs. realative_error, vs. SNR
     :param loss(list): list of MSEs
@@ -213,6 +213,7 @@ def make_plot(loss, acc, num_gpu, param):
     """
     #counter = 1
     for i in range(len(all_num_gpus)):
+        num_gpu = str(all_num_gpus[i])
         fig = plt.figure()
         steps = np.arange(0, all_num_steps[i], 1)
         SNRs = calc_snr(all_num_steps[i])
@@ -228,11 +229,13 @@ def make_plot(loss, acc, num_gpu, param):
         plt.ylabel("Relative Error (%)")
         xticklabels = ax1.get_xticklabels() + ax2.get_xticklabels()
         plt.setp(xticklabels, visible=False)
-        plt.suptitle("Trained {} on {} GPUs in {} steps".format(param, all_num_gpus[i], all_num_steps[i]))
+        plt.suptitle("Trained {} on {} GPUs in {} steps".format(param, num_gpu, all_num_steps[i]))
         fig.tight_layout(rect=[0, 0, 1, 0.95])
-        plt.savefig("result_img/Train_" + param + "_" + str(all_num_gpus[i]) + "_GPUs")
+        plt.savefig("result_img/Train_" + param + "_" + num_gpu + "_GPUs")
         #plt.savefig("result_img/Train_" + str(counter) + "_GPUs")
         #counter += 1
+        mat_train_path = 
+        mat_test_path = 
         sio.savemat("/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/train_loss_" + str(i) + "_" + num_gpu + "_gpu.mat", {'cross_entropy': loss[i]})
         sio.savemat("/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/train_acc_" + str(i) + "_" + num_gpu + "_gpu.mat", {'accuracy': acc[i]})
 
@@ -246,7 +249,7 @@ if __name__ == "__main__":
             ret_value = train(inputs, labels[p], all_num_gpus[g], all_num_steps[g], all_params[p])
             loss.append(ret_value[0])
             acc.append(ret_value[1])
-        make_plot(loss, acc, all_num_gpus[g], all_params[p])
+        make_plot(loss, acc, all_params[p])
 
 
 
