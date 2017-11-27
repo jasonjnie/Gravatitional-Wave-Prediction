@@ -11,7 +11,7 @@ plt.switch_backend('agg')
 <<<Hyperparameters>>>
 """
 all_num_gpus = [1]
-all_num_steps = [10000]      # total number of steps to train (500 signals per step)
+all_num_steps = [100]      # total number of steps to train (500 signals per step)
 lr = 0.0001 			#not sure whether this matters 
 SNR_max = 3
 SNR_min = 0.2
@@ -206,6 +206,7 @@ def make_plot(loss, acc):
     """
     #counter = 1
     for i in range(len(all_num_gpus)):
+        num_gpu = str(all_num_gpus[i])
         fig = plt.figure()
         steps = np.arange(0, all_num_steps[i], 1)
         SNRs = calc_snr(all_num_steps[i])
@@ -221,9 +222,9 @@ def make_plot(loss, acc):
         plt.ylabel("Relative Error (%)")
         xticklabels = ax1.get_xticklabels() + ax2.get_xticklabels()
         plt.setp(xticklabels, visible=False)
-        plt.suptitle("Trained on {} GPUs in {} steps".format(all_num_gpus[i], all_num_steps[i]))
+        plt.suptitle("Trained on {} GPUs in {} steps".format(num_gpu, all_num_steps[i]))
         fig.tight_layout(rect=[0, 0, 1, 0.95])
-        plt.savefig("result_img/Train_" + str(all_num_gpus[i]) + "_GPUs")
+        plt.savefig("result_img/Train_" + num_gpu + "_GPUs")
         #plt.savefig("result_img/Train_" + str(counter) + "_GPUs")
         #counter += 1
         sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small/mat/train_loss_' + str(i) + '_' + num_gpu + '_gpu.mat', {'cross_entropy': loss[i]})

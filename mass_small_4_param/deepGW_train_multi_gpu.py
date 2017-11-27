@@ -17,7 +17,7 @@ plt.switch_backend('agg')
 <<<Hyperparameters>>>
 """
 all_num_gpus = [1]
-all_num_steps = [15000]      # total number of steps to train (500 signals per step)
+all_num_steps = [150]      # total number of steps to train (500 signals per step)
 all_params = ['mass', 'spin']
 lr = 0.0001 			#not sure whether this matters 
 SNR_max = 16
