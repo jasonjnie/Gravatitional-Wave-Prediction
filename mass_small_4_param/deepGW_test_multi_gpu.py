@@ -38,9 +38,9 @@ def make_plot(loss, acc, param):
         plt.setp(xticklabels, visible=False)
         plt.suptitle("Test Prediction of " + param + " on " + num_gpu + " GPUs")
         fig.tight_layout(rect=[0, 0, 1, 0.95])
-        plt.savefig("result_img/Test_" + param + "_" + num_gpu + "_GPUs")
-        sio.savemat("/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/test_loss_" + str(i) + "_" + num_gpu + "_gpu.mat", {'cross_entropy': loss[i]})
-        sio.savemat("/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/test_acc_" + str(i) + "_" + num_gpu + "_gpu.mat", {'accuracy': acc[i]})
+        plt.savefig("result_img_4_param/Test_" + param + "_" + num_gpu + "_GPUs")
+        sio.savemat("/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat_4_param/test_loss_" + str(i) + "_" + num_gpu + "_gpu.mat", {'cross_entropy': loss[i]})
+        sio.savemat("/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat_4_param/test_acc_" + str(i) + "_" + num_gpu + "_gpu.mat", {'accuracy': acc[i]})
 
 
 def test(inputs, labels, num_gpus, param):
