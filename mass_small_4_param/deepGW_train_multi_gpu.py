@@ -233,8 +233,8 @@ def make_plot(loss, acc, num_gpu, param):
         plt.savefig("result_img/Train_" + param + "_" + str(all_num_gpus[i]) + "_GPUs")
         #plt.savefig("result_img/Train_" + str(counter) + "_GPUs")
         #counter += 1
-        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/train_loss_' + str(i) + '_' + num_gpu + '_gpu.mat', {'cross_entropy': loss[i]})
-        sio.savemat('/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/train_acc_' + str(i) + '_' + num_gpu + '_gpu.mat', {'accuracy': acc[i]})
+        sio.savemat("/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/train_loss_" + str(i) + "_" + num_gpu + "_gpu.mat", {'cross_entropy': loss[i]})
+        sio.savemat("/home/abc99lr/Gravatitional-Wave-Prediction/mass_small_4_param/mat/train_acc_" + str(i) + "_" + num_gpu + "_gpu.mat", {'accuracy': acc[i]})
 
 
 
