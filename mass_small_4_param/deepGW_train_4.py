@@ -5,7 +5,7 @@ test signal: 910 x 8192
 """
 
 import tensorflow as tf
-import deepGW
+import deepGW_4_4
 import numpy as np 
 import time
 import pickle
@@ -30,20 +30,20 @@ log_device_placement = False    # toggle to true to print log
 
 def tower_loss(scope, inputs, labels):
 
-    inputs = deepGW.convert_to_tensor_float(inputs)
-    labels = deepGW.convert_to_tensor_float(labels)
+    inputs = deepGW_4.convert_to_tensor_float(inputs)
+    labels = deepGW_4.convert_to_tensor_float(labels)
 
     """
-    pred, logits = deepGW.inference_mass_predictor(inputs)
+    pred, logits = deepGW_4.inference_mass_predictor(inputs)
 
-    _ = deepGW.loss(logits, labels)
+    _ = deepGW_4.loss(logits, labels)
 
-    _ = deepGW.accuracy(pred, labels)
+    _ = deepGW_4.accuracy(pred, labels)
     """
 
-    pred = deepGW.inference_mass_estimator_4conv(inputs)
-    _ = deepGW.loss_estimator(pred, labels)
-    _ = deepGW.accuracy_estimator(pred, labels)
+    pred = deepGW_4.inference_mass_estimator_4conv(inputs)
+    _ = deepGW_4.loss_estimator(pred, labels)
+    _ = deepGW_4.accuracy_estimator(pred, labels)
 
     losses = tf.get_collection('losses', scope)
     accuracies = tf.get_collection('accuracies', scope)
@@ -114,20 +114,20 @@ def train(inputs, labels, num_gpus, num_step, param):
         sess.run(init)
         tf.train.start_queue_runners(sess=sess)
 
-        # 	inputs, labels = deepGW.generate_batch_input(data=inputs, phase='train', snr=snr, size=2*len(inputs), num_epoch, epoch)
+        # 	inputs, labels = deepGW_4.generate_batch_input(data=inputs, phase='train', snr=snr, size=2*len(inputs), num_epoch, epoch)
 
-        # 	inputs, labels = deepGW.generate_batch_input_estimator(inputs, labels, 'train', snr, len(inputs), num_epoch, epoch)
+        # 	inputs, labels = deepGW_4.generate_batch_input_estimator(inputs, labels, 'train', snr, len(inputs), num_epoch, epoch)
         # 	num_step = inputs.shape[0] // (train_step_size * num_gpus)
-        # 	input_epoch, label_epoch = deepGW.prepare_data(inputs, labels)
+        # 	input_epoch, label_epoch = deepGW_4.prepare_data(inputs, labels)
         SNRs = calc_snr(num_step)
         all_loss, all_acc = [], []
         train_start_time = time.time()
 
         for step in range(num_step):
             snr = SNRs[step]
-            input_epoch, label_epoch = deepGW.generate_batch_input_estimator(inputs, labels, 'train', snr,
+            input_epoch, label_epoch = deepGW_4.generate_batch_input_estimator(inputs, labels, 'train', snr,
                                                                              num_gpus*train_step_size, 0, 0)
-            input_batch, label_batch = deepGW.get_a_batch(input_epoch, label_epoch, train_step_size, num_gpus, 0)
+            input_batch, label_batch = deepGW_4.get_a_batch(input_epoch, label_epoch, train_step_size, num_gpus, 0)
 
             start_time = time.time()
             _, loss_value, acc_value = sess.run([apply_gradient_op, loss, accuracy],
@@ -156,7 +156,7 @@ def train(inputs, labels, num_gpus, num_step, param):
                                                                         (total_time % 3600) // 60))
 
 
-    # inputs, labels = deepGW.read_dataset(phase='val')
+    # inputs, labels = deepGW_4.read_dataset(phase='val')
     # test_loss = []
     # test_acc = []
     # test_snr = np.linspace(0.2, 3, 29)
@@ -164,7 +164,7 @@ def train(inputs, labels, num_gpus, num_step, param):
     # for i in range(29):
     # 	print("SNR = ", test_snr[i])
 
-    # 	testsig, testlabel = deepGW.generate_batch_input_estimator(inputs, labels, 'test', snr, 1000, 0, 0)
+    # 	testsig, testlabel = deepGW_4.generate_batch_input_estimator(inputs, labels, 'test', snr, 1000, 0, 0)
 
     # 	m, r = sess.run([loss, accuracy], feed_dict={X: testsig, Y_: testlabel})
 
@@ -189,7 +189,7 @@ def test(inputs, labels):
     for i in range(29):
         print("SNR = ", test_snr[i])
 
-        testsig, testlabel = deepGW.generate_batch_input_estimator(inputs, labels, 'test', snr, 1000, 0, 0)
+        testsig, testlabel = deepGW_4.generate_batch_input_estimator(inputs, labels, 'test', snr, 1000, 0, 0)
 
         m, r = sess.run([loss, accuracy], feed_dict={X: testsig, Y_: testlabel})
 
@@ -240,7 +240,10 @@ def make_plot(loss, acc, param):
 
 
 if __name__ == "__main__":
-    inputs, labels = deepGW.read_dataset_4paras(phase='train')    # input shape = (9180, 8192)
+    inputs, labels = deepGW_4.read_dataset_4paras(phase='train')    # input shape = (9180, 8192)
+    print("")
+
+    '''
     loss, acc = [], []
     for p in range(len(all_params)):
         for g in range(len(all_num_gpus)):
@@ -248,9 +251,9 @@ if __name__ == "__main__":
             loss.append(ret_value[0])
             acc.append(ret_value[1])
         make_plot(loss, acc, all_params[p])
+    '''
 
 
 
-
-#inputs, labels = deepGW.read_dataset(phase='val')
+#inputs, labels = deepGW_4.read_dataset(phase='val')
 #test(inputs, labels)
