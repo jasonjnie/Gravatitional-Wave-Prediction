@@ -9,6 +9,7 @@ plt.switch_backend('agg')
 
 all_num_gpus = [1]    # testing
 test_step_size = 50
+all_params = ['mass', 'spin']
 log_device_placement = False
 SNR_max = 16
 SNR_min = 0.5
@@ -99,11 +100,12 @@ def test(inputs, labels, num_gpus, param):
 if __name__ == "__main__":
     inputs, labels = deepGW.read_dataset(phase='test')
     loss, acc = [], []
-    for i in range(len(all_num_gpus)):
-        ret_value = test(inputs, labels, all_num_gpus[i])
-        loss.append(ret_value[0])
-        acc.append(ret_value[1])
+    for p in range(len(all_params)):
+        for i in range(len(all_num_gpus)):
+            ret_value = test(inputs, labels, all_num_gpus[i], all_params[p])
+            loss.append(ret_value[0])
+            acc.append(ret_value[1])
 
-    make_plot(loss, acc)
+        make_plot(loss, acc, all_params[p])
 
 
